@@ -24,10 +24,12 @@ String guessNamespace(def parsedXml) {
  * Copy the points in the file into out
  * @param out where to copy the points
  * @param file input
+ * @return total processed points
  */
 int copyPointsInFile(def out, def file) {
+
     out.println "<!-- $file -->"
-    int totalPoint = 0
+    
     def parsedXml = new XmlSlurper().parseText(file.text)
 
     String namespace = guessNamespace(parsedXml)
@@ -38,27 +40,34 @@ int copyPointsInFile(def out, def file) {
         throw new RuntimeException("Found $trackCount tracks. One expected")
     }
 
-    String copy = ''
-
     boolean reverse = filesToReverse.find { rule -> file.name.contains(rule) }
-    if (reverse) {
-        print ' [**REVERSED**]'
-    }
-
+    
+    int totalPoint = 0
+    int totalElevationFound = 0
+    String copy = ''
     parsedXml.declareNamespace(x: namespace)
             .'x:trk'.'x:trkseg'.'x:trkpt'
-            .eachWithIndex { point, index ->
+            .each { point ->
 
-        if (reverse) {
-            copy = """<trkpt lat="${point.'@lat'}" lon="${point.'@lon'}"><ele>0</ele></trkpt>""" + copy
-        } else {
-            copy += """<trkpt lat="${point.'@lat'}" lon="${point.'@lon'}"><ele>0</ele></trkpt>"""
+        String elevation = point.ele.text()
+        if (elevation) {
+            elevation="<ele>${elevation}</ele>"
+            totalElevationFound++
         }
-        totalPoint = index
+            
+        String lineForTrackPoint = """<trkpt lat="${point.'@lat'}" lon="${point.'@lon'}">${elevation}</trkpt>\n"""
+        if (reverse) {
+            copy = lineForTrackPoint + copy
+        } else {
+            copy += lineForTrackPoint
+        }
+        totalPoint++
     }
 
     out.println copy
 
+    println " (${totalPoint} points${reverse ? ' REVERSED' : ''} and $totalElevationFound elevation)"
+    
     return totalPoint
 }
 
@@ -69,6 +78,7 @@ int copyPointsInFile(def out, def file) {
  * @param inputFiles files to copy
  */
 void writeFile(def out, String newTrackName, List<File> inputFiles) {
+    int totalPoints = 0
     out.println """<?xml version="1.0" encoding="UTF-8"?>
 <gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1">
 \t<trk>
@@ -77,14 +87,16 @@ void writeFile(def out, String newTrackName, List<File> inputFiles) {
 """
         
         inputFiles.sort { it.name }.each {
-            print "\t\tCopie de ${it.name}"
-            println " (${copyPointsInFile(out, it)} points)"
+            print "\tCopie de ${it.name}"
+            totalPoints += copyPointsInFile(out, it)
         }
 
         out.println """\t</trkseg>
 \t</trk>
 </gpx>
 """
+
+    println "\t** TOTAL : $totalPoints points **\n"
 }
 
 /**
