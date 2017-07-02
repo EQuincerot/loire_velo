@@ -6,5 +6,5 @@ Un script `buildAll.groovy` permet de générer un fichier `.gpx` par jour.
 Usage : `groovy buildAll.groovy`
 
 ## Sources
-https://www.eurovelo6-france.com
-https://www.geovelo.fr
+* https://www.eurovelo6-france.com
+* https://www.geovelo.fr
