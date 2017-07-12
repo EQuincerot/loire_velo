@@ -8,8 +8,7 @@ import java.time.format.DateTimeFormatter
  */
 @Field
 final List<String> filesToReverse = []
-@Field
-final LocalDateTime time = LocalDateTime.of(2017,01,01,0,0)
+
 /**
  * Detect the namespace of the xml
  * @param parsedXml xml parsed with JSonSlurper
@@ -29,7 +28,7 @@ String guessNamespace(def parsedXml) {
  * @param file input
  * @return total processed points
  */
-int copyPointsInFile(def out, def file) {
+int copyPointsInFile(def out, def file, LocalDateTime time) {
 
     out.println "<!-- $file -->"
     
@@ -91,10 +90,10 @@ void writeFile(def out, String newTrackName, List<File> inputFiles) {
 \t\t<name>${newTrackName}</name>
 		<trkseg>
 """
-        
+        LocalDateTime time = LocalDateTime.of(2017,01,01,0,0)
         inputFiles.sort { it.name }.each {
             print "\tCopie de ${it.name}"
-            totalPoints += copyPointsInFile(out, it)
+            totalPoints += copyPointsInFile(out, it, time)
         }
 
         out.println """\t</trkseg>
