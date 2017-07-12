@@ -1,12 +1,15 @@
 import groovy.util.XmlSlurper
 import groovy.transform.Field
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * We need to inverse the order of the points in some files
  */
 @Field
 final List<String> filesToReverse = []
-
+@Field
+final LocalDateTime time = LocalDateTime.of(2017,01,01,0,0)
 /**
  * Detect the namespace of the xml
  * @param parsedXml xml parsed with JSonSlurper
@@ -54,8 +57,11 @@ int copyPointsInFile(def out, def file) {
             elevation="<ele>${elevation}</ele>"
             totalElevationFound++
         }
+        // We need a time to be able to import the trace into openstreetmap
+        String timeTag = "<time>${time.format(DateTimeFormatter.ISO_DATE_TIME)}</time>"
+        time = time.plusSeconds(1)
             
-        String lineForTrackPoint = """<trkpt lat="${point.'@lat'}" lon="${point.'@lon'}">${elevation}</trkpt>\n"""
+        String lineForTrackPoint = """<trkpt lat="${point.'@lat'}" lon="${point.'@lon'}">${elevation}${timeTag}</trkpt>\n"""
         if (reverse) {
             copy = lineForTrackPoint + copy
         } else {
