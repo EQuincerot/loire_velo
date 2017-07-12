@@ -120,7 +120,7 @@ void mergeTracks(String relativeSourcePath, String newTrackName) {
         files << file
     }
 
-    String outputFileName = "$rootPath/${newTrackName}.gpx"
+    String outputFileName = "$rootPath/generated/${newTrackName}.gpx"
     new File(outputFileName).withWriter { out ->
         println "${outputFileName} :"
         writeFile(out, outputFileName, files)
