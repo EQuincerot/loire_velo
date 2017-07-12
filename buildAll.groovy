@@ -15,12 +15,33 @@ final List<String> filesToReverse = []
  * @return namespace to use
  */
 String guessNamespace(def parsedXml) {
-    String namespace = 'http://www.topografix.com/GPX/1/0'
-    if (parsedXml.declareNamespace(x: 'http://www.topografix.com/GPX/1/1').'x:trk'.'x:trkseg'.'x:trkpt'.size()) {
-        namespace = 'http://www.topografix.com/GPX/1/1'
+    String namespace = 'http://www.topografix.com/GPX/1/1'
+    if (parsedXml.declareNamespace(x: 'http://www.topografix.com/GPX/1/0').'x:trk'.'x:trkseg'.'x:trkpt'.size()) {
+        namespace = 'http://www.topografix.com/GPX/1/0'
     }
     return namespace
 }
+
+enum GpxType {
+    TRK(['trk', 'trkseg'], 'trkpt'), RTE(['rte'], 'rtept');
+
+    private List<String> rootPath
+    String pointName
+
+    GpxType(List<String> rootPath, String pointName) {
+        this.rootPath = rootPath
+        this.pointName = pointName
+    }
+
+    def extractPathFromXml(def xml) {
+        def result = xml
+        rootPath.each {
+            result = result."x:$it"
+        }
+        return result
+    }
+}
+
 
 /**
  * Copy the points in the file into out
@@ -37,7 +58,13 @@ int copyPointsInFile(def out, def file, LocalDateTime time) {
     String namespace = guessNamespace(parsedXml)
     def parsedXmlWithNs = parsedXml.declareNamespace(x: namespace)
 
-    int trackCount = parsedXmlWithNs.'x:trk'.'x:trkseg'.size()
+    GpxType gpxType = GpxType.TRK
+    int trackCount = gpxType.extractPathFromXml(parsedXmlWithNs).size()
+    if (trackCount == 0) {
+        gpxType = GpxType.RTE
+        trackCount = gpxType.extractPathFromXml(parsedXmlWithNs).size()
+    }
+
     if (trackCount != 1) {
         throw new RuntimeException("Found $trackCount tracks. One expected")
     }
@@ -47,8 +74,7 @@ int copyPointsInFile(def out, def file, LocalDateTime time) {
     int totalPoint = 0
     int totalElevationFound = 0
     String copy = ''
-    parsedXml.declareNamespace(x: namespace)
-            .'x:trk'.'x:trkseg'.'x:trkpt'
+    gpxType.extractPathFromXml(parsedXmlWithNs)."x:${gpxType.pointName}"
             .each { point ->
 
         String elevation = point.ele.text()
