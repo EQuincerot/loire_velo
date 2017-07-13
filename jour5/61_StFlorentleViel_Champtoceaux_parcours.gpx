@@ -6,6 +6,9 @@
 	</metadata>
 	<trk>
 		<trkseg>
+			<trkpt lat="47.36141" lon="-1.03289">
+				<ele>0</ele>
+			</trkpt>
 			<trkpt lat="47.361033068688606" lon="-1.0354720628494265">
 				<ele>0</ele>
 			</trkpt>
