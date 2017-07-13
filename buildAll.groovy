@@ -155,6 +155,7 @@ void mergeTracks(String relativeSourcePath, String newTrackName) {
 filesToReverse.add('62_Champtoceaux_MauvessurLoire_parcours')
 
 mergeTracks('jour1', 'jour1_42-46_Aubrais-Onzain-via-Chambord')
+mergeTracks('jour1-alternatif', 'jour1_Aubrais-Onzain_alt')
 mergeTracks('jour2', 'jour2_47-49_Onzain-Tours')
 mergeTracks('jour3', 'jour3_50-53_Tours-Brossay-via-Saumur')
 mergeTracks('jour4', 'jour4_54-57-Brossay-Becon')
