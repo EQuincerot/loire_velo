@@ -1972,23 +1972,11 @@
       <rtept lat="47.50084" lon="-0.795189">
          <ele>60</ele>
       </rtept>
-      <rtept lat="47.500852" lon="-0.795158">
-         <ele>60</ele>
-      </rtept>
-      <rtept lat="47.5011483" lon="-0.7947754">
-         <ele>56</ele>
-      </rtept>
-      <rtept lat="47.502441" lon="-0.798579">
-         <ele>60</ele>
-      </rtept>
-      <rtept lat="47.5020865" lon="-0.7987952">
-         <ele>58</ele>
-      </rtept>
-      <rtept lat="47.5024019" lon="-0.8016595">
-         <ele>58</ele>
-      </rtept>
-      <rtept lat="47.5032813" lon="-0.8013378">
-         <ele>58</ele>
-      </rtept>
-   </rte>
+ 
+      <rtept lat="47.500969" lon="-0.794914"> <ele>60</ele>  </rtept>
+      <rtept lat="47.501111" lon="-0.794809"> <ele>60</ele>  </rtept>
+      <rtept lat="47.502336" lon="-0.794219"> <ele>60</ele>  </rtept>
+      <rtept lat="47.502597" lon=" -0.793978"> <ele>60</ele>  </rtept>
+      <rtept lat="47.502909" lon="-0.795078"> <ele>60</ele>  </rtept>
+  </rte>
 </gpx>
